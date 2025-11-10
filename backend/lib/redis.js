@@ -7,9 +7,6 @@ dotenv.config();
 // Redis configuration optimized for production environments
 // Handles connection failures gracefully with automatic retry and reconnection
 const redisConfig = {
-  host: process.env.REDIS_HOST || "localhost",
-  port: process.env.REDIS_PORT || 6379,
-  password: process.env.REDIS_PASSWORD || undefined,
   retryStrategy: (times) => {
     const delay = Math.min(times * 50, 2000);
     logger.warn({ times, delay }, "Redis: Retrying connection");
@@ -30,7 +27,7 @@ const redisConfig = {
   },
 };
 
-export const redis = new Redis(redisConfig);
+export const redis = new Redis(process.env.UPSTASH_REDIS_URL, redisConfig);
 redis.on("connect", () => {
   logger.info("Redis: Connected to Redis server");
 });
